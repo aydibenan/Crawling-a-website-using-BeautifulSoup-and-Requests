@@ -5,7 +5,7 @@ import re
 headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'}
 
 # Define the URL of the product page
-url = 'https://www.hepsiburada.com/nyx-professional-makeup-duck-plump-dolgun-gorunum-veren-dudak-parlaticisi-09-strike-a-rose-pm-HBC00005S8XU4'
+url = 'https://www.hepsiburada.com/nyx-professional-makeup-duck-plump-dolgun-gorunum-veren-dudak-parlaticisi-06-brick-of-time-pm-HBC00005SD3V7'
 
 # Send a GET request to the URL
 response = requests.get(url, headers=headers)
@@ -37,17 +37,21 @@ product_reviews_count = soup.find("div", attrs={"id":"comments-container"}).text
 product_description = soup.find("div", attrs={"id":"productDescriptionContent"}).text.strip()
 # re.sub(pattern, repl, string, count=0, flags=0)
 product_description = re.sub(r'&Nbsp;', '', product_description)  # Remove "&Nbsp;" characters
-
+"""
 # Extract the product reviews
-reviewer1 = soup.find("div", attrs={"class":"hermes-ReviewCard-module-SBoho2ewx9jfjIE6ywIF"}).text.strip()
+reviewer1 = soup.find("span", attrs={"class":"hermes-ReviewCard-module-ooww5HUvW5kp0ULoZFyH"}).text.strip()
 review1 = soup.find("div", attrs={"class":"hermes-ReviewCard-module-KaU17BbDowCWcTZ9zzxw"})
 product_review1 = review1.find("span", attrs={"itemprop":"description"}).text.strip()
 
 reviewer2 = soup.find("div", attrs={"class":"hermes-ReviewCard-module-ba888_vGEW2e_XKxTgdA"}).text.strip()
-review2 = soup.find("div", attrs={"class":"hermes-ReviewCard-module-dY_oaYMIo0DJcUiSeaVW"})
+review = soup.find("div", attrs={"class":"hermes-ReviewCard-module-dY_oaYMIo0DJcUiSeaVW"})
+review2 = review.find("div", attrs={"class":"hermes-ReviewCard-module-KaU17BbDowCWcTZ9zzxw"})
 product_review2 = review2.find("span", attrs={"itemprop":"description"}).text.strip()
+"""
 
-# Print the extracted information
+reviewers = soup.find_all("span", attrs={"class":"hermes-ReviewCard-module-ooww5HUvW5kp0ULoZFyH"})
+reviews = soup.find_all("div", attrs={"class":"hermes-ReviewCard-module-KaU17BbDowCWcTZ9zzxw"})
+
 print('Product Name:', product_name)
 print('Product Brand:', product_brand)
 print('Product Price:', product_price)
@@ -55,7 +59,29 @@ print('Product Seller:', product_seller)
 print('Product Rating:', product_rating)
 print('Product Reviews Count:', product_reviews_count)
 print('Product Description:', product_description)
+
+"""
 print('First Reviewer:', reviewer1)
 print('Product First Review:', product_review1)
 print('First Reviewer:', reviewer2)
 print('Product Second Review:', product_review2)
+"""
+
+"""
+# Print reviewers one by one
+for reviewer in reviewers:
+    print('Reviewer:', reviewer.text.strip())
+
+# Print each review one by one
+for review in reviews:
+    review_text = review.find("span", itemprop="description").text.strip()
+    print('Review:', review_text)
+"""
+
+# Print reviewers and their reviews sequentially
+for i in range(min(len(reviewers), len(reviews))):
+    reviewer = reviewers[i].text.strip()
+    review = reviews[i].find("span", itemprop="description").text.strip()
+    print('Reviewer:', reviewer)
+    print('Review:', review)
+    print()  # Add an empty line for better readability between reviews
